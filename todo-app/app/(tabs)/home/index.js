@@ -1,51 +1,92 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const index = () => {
-
-  const todos = [];
+const Index = () => {
+  const todos = []; // Your todo list data
 
   return (
     <>
-      <View style={{ marginHorizontal: 10, marginVertical: 10, flexDirection: "row", alignItems: "center", gap: 12 }}>
-        <Pressable style={{ backgroundColor: "lightblue", paddingHorizontal: 10, paddingVertical: 10, alignItems: "center", justifyContent: "center" }} >
-          <Text>All</Text>
+      {/* Filter Buttons */}
+      <View style={styles.filterContainer}>
+        <Pressable style={styles.filterButton}>
+          <Text style={styles.filterButtonText}>All</Text>
         </Pressable>
 
-        <Pressable style={{ backgroundColor: "lightblue", paddingHorizontal: 10, paddingVertical: 10, alignItems: "center", justifyContent: "center" }} >
-          <Text>Work</Text>
+        <Pressable style={styles.filterButton}>
+          <Text style={styles.filterButtonText}>Work</Text>
         </Pressable>
 
-        <Pressable style={{ backgroundColor: "lightblue", paddingHorizontal: 10, paddingVertical: 10, alignItems: "center", justifyContent: "center", marginRight: "auto" }} >
-          <Text>Personal</Text>
+        <Pressable style={styles.filterButton}>
+          <Text style={styles.filterButtonText}>Personal</Text>
         </Pressable>
 
-        <Pressable style={{ paddingHorizontal: 10, paddingVertical: 10, alignItems: "center", justifyContent: "center" }} >
-          <AntDesign name="pluscircleo" size={30} color="lightblue" />
+        <Pressable style={styles.addButton}>
+          <AntDesign name="pluscircleo" size={30} color="blue" />
         </Pressable>
-
       </View>
 
-      <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
-        <View style={{ padding: 10 }}>
-          {todos?.length > 0 ? (
+      {/* Todo List or Empty State */}
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.todoContainer}>
+          {todos.length > 0 ? (
             <View>
-              <Text>Got Todo</Text>
+              <Text style={styles.todoText}>Got Todo</Text>
+              {/* Map your todos here */}
             </View>
           ) : (
-            <View>
-              <Text>No todos! Create some tasks!</Text>
+            <View style={styles.emptyStateContainer}>
+              <Text style={styles.emptyStateText}>No todos! Create some tasks!</Text>
             </View>
           )}
         </View>
-
       </ScrollView>
     </>
+  );
+};
 
-  )
-}
+export default Index;
 
-export default index
-
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  filterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    justifyContent: 'space-between',
+    marginHorizontal: 10,
+    marginVertical: 10,
+  },
+  filterButton: {
+    backgroundColor: 'lightblue',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  filterButtonText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  addButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  todoContainer: {
+    padding: 10,
+  },
+  todoText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  emptyStateContainer: {
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: '#999',
+  },
+});
