@@ -15,7 +15,7 @@ import axios from 'axios';
 import { API_URL } from '@env';
 
 const Index = () => {
-  const todos = []
+  const [todos, setTodos] = useState([]);
   const [isModalVisible, setModalVisible] = useState(false);
   const [todo, setTodo] = useState("");
   const [category, setCategory] = useState("");
@@ -23,6 +23,25 @@ const Index = () => {
   const [showDatePicker, setShowDatePicker] = useState(false); // State for controlling date picker visibility
   
   const exampleTodos = ["Do laundry", "Sleep early", "Buy groceries", "Read a book", "Exercise"];
+  
+  const handleTodoRefresh = async() =>{
+    try {
+      // await AsyncStorage.removeItem("authToken");
+ 
+      const token = await AsyncStorage.getItem("authToken");
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        const userId = decodedToken.userId;
+        const response = await axios.get(`${API_URL}/users/${userId}/todos`);
+        console.log(response.data.todos)
+        setTodos(response.data.todos)
+
+        // Add methods to filter between pending and completed
+      }
+    }catch (error){
+      console.log(error)
+    }
+  }
   
   const handleSubmit = async () => {
     if (todo && category) {
@@ -43,9 +62,9 @@ const Index = () => {
           };
   
           console.log("Todo added:", newTodo);
-  
+          
           const response = await axios.post(`${API_URL}/todos/${userId}`, newTodo);
-  
+
           setTodo("");
           setCategory("");
           setModalVisible(false);
@@ -79,22 +98,43 @@ const Index = () => {
         <Pressable style={styles.addButton} onPress={() => setModalVisible(true)}>
           <AntDesign name="pluscircleo" size={30} color="blue" />
         </Pressable>
+        
+        <Pressable style={styles.addButton} onPress={() => handleTodoRefresh()}>
+          <AntDesign name="reload1" size={30} color="blue" />
+          
+        </Pressable>
       </View>
 
       {/* Todo List or Empty State */}
       <ScrollView style={styles.scrollView}>
-        <View style={styles.todoContainer}>
-          {todos.length > 0 ? (
-            <View>
-              <Text style={styles.todoText}>Got Todo</Text>
-            </View>
-          ) : (
-            <View style={styles.emptyStateContainer}>
-              <Text style={styles.emptyStateText}>No todos! Create some tasks!</Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+      <View style={styles.todoContainer}>
+        {todos.length > 0 ? (
+          <View>
+            <Text style={styles.todoText}>Got Todo</Text>
+
+            {/* Display todos using FlatList */}
+            <FlatList
+              data={todos} // Pass the todos array as data
+              keyExtractor={(item) => item._id} // Use the unique _id of each todo as the key
+              renderItem={({ item }) => (
+                <View style={styles.todoItem}>
+                  {/* Customize how each todo will be displayed */}
+                  <Text style={styles.todoTitle}>{item.title}</Text>
+                  <Text style={styles.todoCategory}>{item.category}</Text>
+                  <Text style={styles.todoDueDate}>Due: {item.dueDate}</Text>
+                  <Text style={styles.todoStatus}>Status: {item.status}</Text>
+                </View>
+              )}
+            />
+          </View>
+        ) : (
+          <View style={styles.emptyStateContainer}>
+            <Text style={styles.emptyStateText}>No todos! Create some tasks!</Text>
+          </View>
+        )}
+      </View>
+    </ScrollView>
+
 
       {/* Modal Implementation */}
       <BottomModal
@@ -267,5 +307,45 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  todoContainer: {
+    padding: 20,
+  },
+  todoText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  todoItem: {
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 8,
+  },
+  todoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  todoCategory: {
+    fontSize: 14,
+    color: '#555',
+  },
+  todoDueDate: {
+    fontSize: 12,
+    color: '#999',
+  },
+  todoStatus: {
+    fontSize: 12,
+    color: '#333',
+  },
+  emptyStateContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: '#888',
   }
 });

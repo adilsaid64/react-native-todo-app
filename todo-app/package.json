@@ -22,6 +22,7 @@
     "react-native": "0.74.5",
     "react-native-dotenv": "^3.4.11",
     "react-native-elements": "^3.4.3",
+    "react-native-gesture-handler": "^2.20.2",
     "react-native-modal": "^13.0.1",
     "react-native-modals": "^0.22.3",
     "react-native-models": "^0.7.9",
