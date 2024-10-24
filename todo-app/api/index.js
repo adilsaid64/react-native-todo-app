@@ -106,3 +106,31 @@ app.post("/login", async (req, res) => {
         res.status(500).json({ message: "Login Failed!" });
     }
 });
+
+app.post("/todos/:userId", async(req, res)=>{
+    try{
+        // const userId = req.params.userId;
+        const {title, category, dueDate, status, createdAt, userId} = req.body;
+
+        const newTodo = new Todo({
+            title: title,
+            category: category,
+            dueDate: dueDate,
+            status: status,
+            createdAt: createdAt,
+          });
+
+          newTodo.save();
+
+          console.log(newTodo, userId)
+
+          const user = await User.findById(userId)
+          if (!user){
+            res.status(404).json({error:`User ${userId} not found!`})
+          }
+          user?.todos.push(newTodo._id);
+          await user.save()
+    } catch (error){
+        res.status(200).json({message:"todo not added!"})
+    }
+})
