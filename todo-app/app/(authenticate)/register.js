@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import axios from 'axios';
+import { API_URL } from '@env';
 
 const register = () => {
   const [name, setName] = useState("")
@@ -19,12 +20,21 @@ const register = () => {
       password:password
     }
 
-    // axios.post("http://localhost:3000/register", (user)).then((response)=>{
-    //   console.log(response);
-    //   Alert.alert("Registration successfull!")
-    // })
+    axios.post(`${API_URL}/register`, (user)).then((response)=>{
+      console.log('Posing Data ', user)
+      // console.log(response);
+      Alert.alert("Registration successfull!")
+    })
 
   };
+
+
+  const handleStatusCheck = () => {
+    console.log('Getting Health Status')
+    axios.get(`${API_URL}/status`).then((response)=>{
+      console.log(response)
+    })
+  }
 
   return (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
@@ -67,15 +77,22 @@ const register = () => {
         style={{ marginBottom: 20 }}
       />
 
-      {/* Login Button */}
+      {/* Register Button */}
       <Button mode="contained" onPress={handleRegister} style={{ marginBottom: 20 }}>
         Register
       </Button>
 
-      {/* Register Button */}
+
+      {/* Status Button */}
+      <Button mode="contained" onPress={handleStatusCheck} style={{ marginBottom: 20 }}>
+        Check API Status
+      </Button>
+
+      {/* Login Button */}
       <Button mode="text" onPress={() => router.replace("/login")}>
        Already have an account? Sign in
       </Button>
+      
     </SafeAreaView>
   );
 };

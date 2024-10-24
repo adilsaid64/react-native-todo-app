@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '@env';
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -10,6 +14,15 @@ const Login = () => {
 
   const handleLogin = () => {
     console.log(`Email: ${email}, Password: ${password}`);
+    const user = {
+      email:email,
+      password:password
+    }
+    axios.post(`${API_URL}/login`, (user)).then((response)=>{
+      const token = response.data.token;
+      AsyncStorage.setItem("authToken", token);
+      router.replace("/(tabs)/home")
+    })
   };
 
   return (
