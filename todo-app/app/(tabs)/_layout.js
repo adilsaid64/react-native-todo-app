@@ -44,8 +44,8 @@ export default function Layout() {
                     headerShown: false,
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <MaterialCommunityIcons name="account-details" size={24} color="blue" />) : (
-                            <MaterialCommunityIcons name="account-details" size={24} color="black" />)
+                            <AntDesign name="user" size={24} color="blue" />) : (
+                            <AntDesign name="user" size={24} color="black" />)
                 }}
             />
         </Tabs>
